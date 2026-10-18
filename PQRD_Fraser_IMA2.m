@@ -10,7 +10,7 @@ function Results = PQRD_Fraser_IMA2(A);
 %   Faizan's
 %-------------------------------------------------------------------
 tic;
-[Qhat, Rhat] = PQRD_BC2_MS13_MultShift_Search(A,400,1e-8,1e-8,1e-8);
+[Qhat, Rhat] = PQRD_BC2_MS13_MultShift_Search(A,500,1e-8,1e-8,1e-8);
 Qhat = ParaHerm(Qhat);
 ExecTime = toc;
  
@@ -27,7 +27,7 @@ QQ(:,:,(size(QQ,3)+1)/2) = QQ(:,:,(size(QQ,3)+1)/2) - eye(M);
 etaPU = PolyMatNorm(QQ);
 
 % upper trangularisation
-etaTR = PolyMatNorm(Rhat-Rphat)/PolyMatNorm(Rphat);
+etaTR = PolyMatNorm(Rhat-Rphat)/PolyMatNorm(A);
 
 % reconstruction error
 Ahat = PolyMatConv(Qhat,Rphat);

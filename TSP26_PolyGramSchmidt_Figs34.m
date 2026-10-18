@@ -92,7 +92,7 @@ for m = 1:M,
    lower = lower + PolyMatNorm(Rhat(m,1:m-1,:));
    upper = upper + PolyMatNorm(Rhat(m,m:M,:));
 end;
-TriEnergy = 10*log10(lower/upper);
+TriEnergy = 10*log10(lower/PolyMatNorm(A));
 disp(sprintf('error in triangularisation:   %f dB',TriEnergy));
 %
 QhatQ = PolyMatConv(ParaHerm(Qhat),Q);
@@ -142,7 +142,7 @@ for m = 1:M,
    lower = lower + PolyMatNorm(A1(m,1:m-1,:));
    upper = upper + PolyMatNorm(A1(m,m:M,:));
 end;
-TriEnergy = 10*log10(lower/upper);
+TriEnergy = 10*log10(lower/PolyMatNorm(A));
 disp(sprintf('error in triangularisation:   %f dB',TriEnergy));
 % reconstruction error
 for k = 1:size(A1,3),    A1(:,:,k) = A1(:,:,k).*Mask; end;

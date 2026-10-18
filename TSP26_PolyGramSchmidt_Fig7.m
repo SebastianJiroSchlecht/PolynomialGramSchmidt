@@ -10,6 +10,9 @@
 clear all; close all;
 
 A = dlmread('PQRDEnsembleResults.txt');
+if size(unique(A(:,1:4),'rows'),1)~=size(A,1),
+    warning('The archive contains repeated method/seed/dimension/order keys; rows are preserved.');
+end;
 % extract data for different methods
 Results = zeros(5,5,4);
 Upper = Results; Lower = Results;
@@ -33,17 +36,16 @@ for method = 1:4
          dummy2 = dummy(find(dummy(:,1)==M(m)),3:8);
          % add orders of Q and R together
          dummy2(:,4) = dummy2(:,4) + dummy2(:,5)-2;
-         if or(method==1,method==3)  
-            dummy2 = sort(dummy2(1:10000,[1 2 3 4 6]));               
-            Results(m,:,method) = dummy2(5000,:);
-            Lower(m,:,method) = dummy2(501,:);
-            Upper(m,:,method) = dummy2(9500,:);
-         else   
-            dummy2 = sort(dummy2(1:1000,[1 2 3 4 6]));               
-            Results(m,:,method) = dummy2(500,:);
-            Lower(m,:,method) = dummy2(51,:);
-            Upper(m,:,method) = dummy2(950,:);
-         end;   
+         if or(method==1,method==3), expected=10000; else, expected=1000; end;
+         N = min(expected,size(dummy2,1));
+         assert(N>0,'No results for method %d at M=%d.',method,M(m));
+         if N<expected,
+            warning('Only %d of %d requested trials for method %d at M=%d.',N,expected,method,M(m));
+         end;
+         dummy2 = sort(dummy2(1:N,[1 2 3 4 6]));
+         Results(m,:,method) = dummy2(ceil(N/2),:);
+         Lower(m,:,method) = dummy2(floor(.05*N)+1,:);
+         Upper(m,:,method) = dummy2(ceil(.95*N),:);
       end;
    end;
 end;      
@@ -85,7 +87,7 @@ for r = 1:3,
      text(1.2,-15,'(a)','interpreter','latex');
      ylabel('paraunitarity error, $10\log_{10}\{\eta_{\mathrm{PU}} \}$','interpreter','latex');
      legend({'PQRD-BC [17,20]','PQRD-MS [21]','PQRD-DFT [23]','proposed'},'interpreter','latex',...
-             'location','West');
+             'location','West','AutoUpdate','off');
   elseif r==2,   
      text(1.2,-15,'(b)','interpreter','latex');
      ylabel('triangularisation error, $10\log_{10}\{\eta_{\mathrm{TR}} \}$','interpreter','latex');
@@ -111,6 +113,7 @@ errorbar(log2(M)+0.05,(Results(:,r,3)),...
            (Upper(:,r,3))-(Results(:,r,3)),'r.');
 semilogy(log2(M),Results(:,r,4),'k:+','linewidth',LW);
 errorbar(log2(M)+0.05,(Results(:,r,4)),...
+           (Results(:,r,4))-(Lower(:,r,4)),...
            (Upper(:,r,4))-(Results(:,r,4)),'k.');
 semilogy(log2(M),Results(:,r,4),'k:');
   set(gca,'TickLabelInterpreter','latex','XTick',(1:5),'XTickLabel',...

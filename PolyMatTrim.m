@@ -1,6 +1,11 @@
 function B = PolyMatTrim(A,p);
 % B = PolyMatTrim(A,p);
 
+if ~any(A(:)),
+   B = A(:,:,1);
+   return;
+end;
+
 E = squeeze(sum(sum(abs(A).^2,1),2));
 [Emax,EmaxIndex] = max(E);
 
@@ -18,8 +23,7 @@ if E1_length<=E2_length,
    B = A(:,:,E1_zeroed(1):E1_zeroed(end));
 else
    disp('consider non-causal');
-   E1_zeroed = find(circshift(E,Shift)>(Emax*p));
-   E1_length = E1_zeroed(end)-E1_zeroed(1);
+   E1_zeroed = E2_zeroed;
    A = circshift(A,[0 0 -Shift]);  
    B = A(:,:,E1_zeroed(1):E1_zeroed(end));
 end;

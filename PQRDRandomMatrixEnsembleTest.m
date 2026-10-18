@@ -1,88 +1,59 @@
-% PQRDRandomMatrixEnsembleTest.m
-%
-% Matlab script file to generate the ensemble simulation.
-%
-% [1] Faizan / Ian / Sebastian / Stephan, TSP
-
-
-%-------------------------------------------------------------------------------
-%  Parameters
-%-------------------------------------------------------------------------------
-FileName = 'PQRDEnsembleResults.txt';
-% code for benchmark methods
-%SetPaths;                                % set paths for PEVD toolbox files
-path(path,'PQRD_code_john');              % benchmark algorithms
-path(path,'PQRD_code_faizan');
-path(path,'PQRD_code_fraser');
-
-SpaceDimM = [2 4 8 16 32];                % spatial dimensions
-Lengths = [2];                            % it says 'Lengths' but is the order of the polynomials
-SeedVals = (1:10000);                     % seed values for random number generator
-Methods = [1 2 3 4];                      % different methods
-%   1 = proposed;  2 = Joanne Foster's; 3 = Faizan's CAMSAP; 4 = Fraser Coutts' 
-
-%-------------------------------------------------------------------------------
-%  Ensemble simulation
-%-------------------------------------------------------------------------------
-for i = 1:length(SpaceDimM),
-   M = SpaceDimM(i);
-   disp(sprintf('****** spatial dimension %d ******',M));
-   for ell = 1:length(Lengths),
-      L = Lengths(ell);
-      disp(sprintf('***** polynomial length %d *****',L));
-      for m = 1:length(Methods),
-         method = Methods(m);
-         disp(sprintf('*** Method %d *****',method));    
-         RESULTS = zeros(1000,10);
-         parfor i = 1:length(SeedVals),
-            disp(sprintf('Seedvalue: %d',SeedVals(i)));
-            %------------------------------------------------------------------- 
-	    %  Generate random matrix
-            %-------------------------------------------------------------------
-            % paraunitary matrix
-            Q = PUPolyMatRand(M,max(floor(L/2),1),SeedVals(i),'complex');
-            randn('seed',SeedVals(i));
-            % upper right triangular matrix
-            R = (randn(M,M,floor(L/2)+1) + 1i*randn(M,M,floor(L/2)+1) )/sqrt(2);
-            for m = 1:M-1, 
-               for n = m+1:M,
-                   R(n,m,:) = zeros(1,1,size(R,3));
-               end;
-            end;
-            A = PolyMatConvFast(Q,R);       
-            %------------------------------------------------------------------- 
-	    %  call different PQRD algorithms
-            %-------------------------------------------------------------------
-            if method==1,              % proposed method
-               Results = ProposedQRDRandomMatrixSingleTest2(A,1e-8,2);
-            elseif method==2,   
-               Results = PQRDBCRandomMatrixSingleTest2(A);
-            elseif method==3,   
-               Results = PQRD_Faizan_CAMSAP2(A);
-            elseif method==4,   
-               Results = PQRD_Fraser_IMA2(A);
+function PQRDRandomMatrixEnsembleTest(FileName,SpaceDimM,SeedVals,Methods)
+% Regenerate Section VI-C; keep the shipped archive unchanged.
+% Optional arguments allow small validation runs with the same code path.
+if nargin<1, FileName='PQRDEnsembleResults-recomputed.txt'; end
+if nargin<2, SpaceDimM=[2 4 8 16 32]; end
+if nargin<3, SeedVals=1:10000; end
+if nargin<4, Methods=1:4; end
+assert(~isfile(FileName),'Move the existing output before starting a fresh ensemble.');
+SetPaths;
+L = 2;
+for dimensionIndex = 1:numel(SpaceDimM)
+    M = SpaceDimM(dimensionIndex);
+    for methodIndex = 1:numel(Methods)
+        method = Methods(methodIndex);
+        assert(ismember(method,1:4),'Unknown method.');
+        if method==2 && M==32, continue; end
+        seeds = SeedVals;
+        if ismember(method,[2 4]), seeds=seeds(1:min(1000,numel(seeds))); end
+        RESULTS = zeros(numel(seeds),10);
+        valid = true(numel(seeds),1);
+        for seedIndex = 1:numel(seeds)
+            seed = seeds(seedIndex);
+            Q = PUPolyMatRand(M,1,seed,'complex');
+            randn('seed',seed);
+            R = (randn(M,M,2)+1i*randn(M,M,2))/sqrt(2);
+            for coefficientIndex = 1:2
+                R(:,:,coefficientIndex) = triu(R(:,:,coefficientIndex));
+            end
+            % |det(Q)|=1: test the paper's determinant exclusion using R.
+            Rf = fft(R,4096,3);
+            determinant = ones(4096,1);
+            for columnIndex = 1:M
+                determinant = determinant.*squeeze(Rf(columnIndex,columnIndex,:));
+            end
+            if any(abs(determinant)<1e-12)
+                valid(seedIndex)=false;
+                warning('Excluded seed %d at M=%d: determinant below 1e-12.',seed,M);
+                continue;
+            end
+            A = PolyMatConvFast(Q,R);
+            if method==1
+                result = ProposedQRDRandomMatrixSingleTest2(A,1e-8,2);
+            elseif method==2
+                result = PQRDBCRandomMatrixSingleTest2(A);
+            elseif method==3
+                result = PQRD_Faizan_CAMSAP2(A);
             else
-               disp('method not implemented');   
-            end;
-            %--------------------------------------------------------
-            %  write results to a file
-            %--------------------------------------------------------
-%            if exist(FileName,'file') ~= 2,
-%               disp('new results file created');
-%               dlmwrite(FileName,[method SeedVals(i) M L Results]);
-%            else  
-%               disp('results appended');
-%               dlmwrite(FileName,[method SeedVals(i) M L Results],'-append');
-%            end;
-             RESULTS(i,:) = [method SeedVals(i) M L Results];             
-         end;      % loop for ensemble / seed values
-         if exist(FileName,'file') ~= 2,
-            disp('new results file created');
-            dlmwrite(FileName,RESULTS);
-         else   
-            disp('results appended');
-            dlmwrite(FileName,RESULTS,'-append');
-         end;
-      end;     % loop for methods      
-   end;    % loop for temporal dimension L 
-end;   % loop for spatial dimension M
+                result = PQRD_Fraser_IMA2(A);
+            end
+            RESULTS(seedIndex,:) = [method seed M L result];
+        end
+        if isfile(FileName)
+            dlmwrite(FileName,RESULTS(valid,:),'-append','precision','%.17g');
+        else
+            dlmwrite(FileName,RESULTS(valid,:),'precision','%.17g');
+        end
+    end
+end
+end

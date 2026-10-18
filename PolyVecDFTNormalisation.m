@@ -37,6 +37,9 @@ function qf = PolyVecDFTNormalisation(af,Smoothing,DiffOrd);
 % Stephan Weiss, UoS, 12/8/24
 
 if nargin<3, DiffOrd=3; end;
+if ~all(isfinite(af(:))) || ~any(af(:)),
+   error('PolyVecDFTNormalisation:InvalidVector','Input must be finite and nonzero.');
+end;
    
 
 %------------------------------------------------------------------------------
@@ -56,7 +59,7 @@ af = af/norm(af,'fro')*K;
 %------------------------------------------------------------------------------
 % take K-point DFT and move bins where the vector norm is zero
 %------------------------------------------------------------------------------
-NormAf2 = sum(abs(af).^2);     % squared norm in each bin
+NormAf2 = sum(abs(af).^2,1);     % squared norm in each bin
 ZeroBinIndices = find(NormAf2<eps0);
 if QuietMode==0, 
    if length(ZeroBinIndices)>0,
@@ -101,7 +104,7 @@ for k = 2:K,
    HermAngle(k) = angle(Afnorm(:,k-1)'*Afnorm(:,k));
 end;
 %HermAngle   
-SignCorrection = -mod(cumsum(HermAngle>pi/2),2);      % '-1' means a sign change
+SignCorrection = -mod(cumsum(abs(HermAngle)>pi/2),2);      % '-1' means a sign change
 dummy = find(SignCorrection==0);
 SignCorrection(dummy) = ones(1,length(dummy));        % '1' means no sign change
 

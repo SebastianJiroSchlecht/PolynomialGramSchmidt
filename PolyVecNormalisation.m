@@ -1,23 +1,23 @@
 function [q,error_P] = PolyVecNormalisation(a,eps_P,MaxDFT,Smoothing,DiffOrd);
 % q = PolyVecNormalisation(a,eps_P,MaxDFT)
 % 
-% q = PolyVecNormalisation(a,MaxDFT) performs the normalisation of a polynomial 
+% q = PolyVecNormalisation(a,eps_P,MaxDFT) performs the normalisation of a polynomial
 % vector a. The result is guaranteed to be analytic [1], and the order of the
 % approximation is refined until either a maximum DFT size MaxDFT is reached 
 % or the projection error [1] falls below the threshold eps_P [1]. The return
 % parameter q is the normalised vector.
 % 
-% [q,error_P] = PolyVecNormalisation(a,MaxDFT) additionally returns the reached
+% [q,error_P] = PolyVecNormalisation(a,eps_P,MaxDFT) additionally returns the reached
 % projection error in the variable error_P.
 % 
-% The implementation reflects Algorithm 2 in [1].
+% Projection-based variant of Algorithm 2 in [1]; the unity criterion is not checked.
 %
 % Input parameters
 %   a          Mx1xN1 polynomial vector
 %   eps_P      threshold for projection error
-%   MaxDFT     maximum DFT size
-%   Smoothing  phase smoothing: 'on' or 'off'
-%   DiffOrd    differential order for smoothing (opt., default 3)
+%   MaxDFT     maximum doubled projection-check DFT size
+%   Smoothing  phase smoothing: 'on' or 'off' (default 'off')
+%   DiffOrd    accepted for compatibility; replaced by the adaptive order below
 %
 % Output parameter
 %   q        normalised vector of dimension Mx1xN2
@@ -42,11 +42,12 @@ end;
 if L>1,
    disp('input dimension incorrect');
 end;
-a = squeeze(a);
+a = reshape(a,M,N1);
 K = 2^(ceil(log2(N1))-1);
 error_P = 10*eps_P;
 
-if nargin<4, DiffOrd = 3; end;
+if nargin<4, Smoothing = 'off'; end;
+if nargin<5, DiffOrd = 3; end;
 
 K = 2*K;                             % starting DFT size
 af = fft(a,K,2);             
@@ -61,7 +62,7 @@ while and( (error_P>eps_P),(K<=MaxDFT/2) ),
    K = 2*K;
    af = fft(a,K,2);                 % for next iteration, but also for check
    % check of projection criterion
-   qaf = sum(conj(q2f).*af);
+   qaf = sum(conj(q2f).*af,1);
    error_P = norm(af - q2f.*(qaf(ones(M,1),:)),'fro')^2;
    % disp(sprintf('DFT size K = %d :  projecton error %0.5g',[K error_P]));                  
 end;       

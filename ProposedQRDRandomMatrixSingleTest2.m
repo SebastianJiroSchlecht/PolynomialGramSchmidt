@@ -52,7 +52,7 @@ QQ(:,:,(size(QQ,3)+1)/2) = QQ(:,:,(size(QQ,3)+1)/2) - eye(M);
 etaPU = PolyMatNorm(QQ);
 
 % upper trangularisation
-etaTR = PolyMatNorm(Rhat-Rphat)/PolyMatNorm(Rphat);
+etaTR = PolyMatNorm(Rhat-Rphat)/PolyMatNorm(A);
 
 % reconstruction error
 Ahat = PolyMatConvFast(Qhat,Rphat);
