@@ -76,10 +76,10 @@ REn = squeeze(sum(sum(abs(RR).^2,1),2));
 %------------------------------------------------------------------------------
 %  display Q and Rhat
 %------------------------------------------------------------------------------
-Qh = zeros(M,M,21); Rh = zeros(M,M,15);
+Qh = zeros(M,M,21); Rh = zeros(M,M,11);
 for m = 1:M,
    Qh(:,m,:) = PolyMatCentreTrim(Qhat(:,m,:),21);
-   Rh(m,:,:) = PolyMatCentreTrim(Rhat(m,:,:),15);
+   Rh(m,:,:) = PolyMatCentreTrim(Rhat(m,:,:),11);
 end;   
 
 %------------------------------------------------------------------------------
@@ -111,9 +111,9 @@ set(gca,'LooseInset',get(gca,'TightInset'));
 %  Figure 6 --- matrix R(z)
 %------------------------------------------------------------------------------
 figure(6); clf;
-tA = (0:14);
+tA = (0:10);
 Rh(3,:,:) = -Rh(3,:,:);       % for display only ... effectively sign inversion of q2(z)
-Aaxis = [0 14 -2 7];
+Aaxis = [0 10 -2 7];
 for Nrow=1:M,
    for Ncol = 1:M,
       subplot(M,M,Ncol+M*(Nrow-1));
