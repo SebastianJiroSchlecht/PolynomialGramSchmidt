@@ -37,20 +37,14 @@ E = PolyMatConvPHFast(Qhat,Qhat);
 E(:,:,(size(E,3)+1)/2) = E(:,:,(size(E,3)+1)/2)-eye(2);
 assert(PolyMatNorm(E)<1e-20,'Toy example must yield a paraunitary factor.');
 
-% Exercise each supplied method on the same nonsingular random input.
-A = randn(2,2,3)+1i*randn(2,2,3);
-methods = {@(a) ProposedQRDRandomMatrixSingleTest2(a,1e-8,2),...
-    @PQRDBCRandomMatrixSingleTest2,@PQRD_Faizan_CAMSAP2,@PQRD_Fraser_IMA2};
-for k = 1:numel(methods)
-    r = methods{k}(A);
-    assert(numel(r)==6 && all(isfinite(r)) && all(r>=0));
-    fprintf('PASS benchmark method %d\n',k);
-end
+% Exercise every method through the paper's ensemble generator at two dimensions.
 output = [tempname '.txt'];
 outputCleanup = onCleanup(@() delete(output));
-PQRDRandomMatrixEnsembleTest(output,[2 4],[1 2],1);
+PQRDRandomMatrixEnsembleTest(output,[2 4],1,1:4);
 r = readmatrix(output);
-assert(size(r,1)==4 && size(unique(r(:,1:4),'rows'),1)==4);
+assert(size(r,1)==8 && size(unique(r(:,1:4),'rows'),1)==8);
+assert(all(isfinite(r),'all') && all(r(:,5:end)>=0,'all'));
 assert(isequal(sort(unique(r(:,3))),[2;4]));
+assert(isequal(sort(unique(r(:,1))),[1;2;3;4]));
 fprintf('Numerical regressions passed.\n');
 end
