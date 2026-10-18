@@ -59,7 +59,7 @@ af = af/norm(af,'fro')*K;
 %------------------------------------------------------------------------------
 % take K-point DFT and move bins where the vector norm is zero
 %------------------------------------------------------------------------------
-NormAf2 = sum(abs(af).^2);     % squared norm in each bin
+NormAf2 = sum(abs(af).^2,1);     % squared norm in each bin
 ZeroBinIndices = find(NormAf2<eps0);
 if QuietMode==0, 
    if length(ZeroBinIndices)>0,

@@ -39,7 +39,7 @@ Mask = toeplitz([1; zeros(size(A,1)-1,1)],ones(1,size(A,2)));
 SCond = 1e-3;
 crop_param = 1e-10;
 undelay = 0;
-maxiter = 2000;
+maxiter = 500;
 Ainput_zerolag = 1;
 % PQRD-BC routine
 tic;
@@ -61,7 +61,7 @@ QQ(:,:,(size(QQ,3)+1)/2) = QQ(:,:,(size(QQ,3)+1)/2) - eye(M);
 etaPU = PolyMatNorm(QQ);
 
 % upper trangularisation
-etaTR = PolyMatNorm(Rhat-Rphat)/PolyMatNorm(Rphat);
+etaTR = PolyMatNorm(Rhat-Rphat)/PolyMatNorm(A);
 
 % reconstruction error
 Ahat = PolyMatConvFast(Qhat,Rphat);

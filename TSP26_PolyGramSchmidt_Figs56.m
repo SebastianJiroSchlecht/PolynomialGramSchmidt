@@ -48,7 +48,7 @@ print -depsc Figure5.eps
 if exist('Qhat.mat')==2,
    load Qhat.mat
 else   
-   Qhat = PolyMatGramSchmidt(A,1e-7,'on',4);
+   Qhat = PolyMatGramSchmidt(A,1e-12,'on',4);
    save Qhat.mat Qhat
 end;       
 % error in paraunitarity
@@ -63,7 +63,7 @@ for m = 1:M,
    lower = lower + PolyMatNorm(Rhat(m,1:m-1,:));
    upper = upper + PolyMatNorm(Rhat(m,m:M,:));
 end;
-TriEnergy = 10*log10(lower/upper);
+TriEnergy = 10*log10(lower/PolyMatNorm(A));
 disp(sprintf('error in triangularisation:   %f dB',TriEnergy));
 
 % determine the support of Rhat down to -50~dB coefficient size
@@ -76,10 +76,10 @@ REn = squeeze(sum(sum(abs(RR).^2,1),2));
 %------------------------------------------------------------------------------
 %  display Q and Rhat
 %------------------------------------------------------------------------------
-Qh = zeros(M,M,21); Rh = zeros(M,M,11);
+Qh = zeros(M,M,21); Rh = zeros(M,M,15);
 for m = 1:M,
    Qh(:,m,:) = PolyMatCentreTrim(Qhat(:,m,:),21);
-   Rh(m,:,:) = PolyMatCentreTrim(Rhat(m,:,:),11);
+   Rh(m,:,:) = PolyMatCentreTrim(Rhat(m,:,:),15);
 end;   
 
 %------------------------------------------------------------------------------
@@ -111,9 +111,9 @@ set(gca,'LooseInset',get(gca,'TightInset'));
 %  Figure 6 --- matrix R(z)
 %------------------------------------------------------------------------------
 figure(6); clf;
-tA = (0:10);
+tA = (0:14);
 Rh(3,:,:) = -Rh(3,:,:);       % for display only ... effectively sign inversion of q2(z)
-Aaxis = [0 10 -2 7];
+Aaxis = [0 14 -2 7];
 for Nrow=1:M,
    for Ncol = 1:M,
       subplot(M,M,Ncol+M*(Nrow-1));

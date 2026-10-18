@@ -10,6 +10,9 @@
 clear all; close all;
 
 A = dlmread('PQRDEnsembleResults.txt');
+if size(unique(A(:,1:4),'rows'),1)~=size(A,1),
+    warning('The archive contains repeated method/seed/dimension/order keys; rows are preserved.');
+end;
 % extract data for different methods
 Results = zeros(5,5,4);
 Upper = Results; Lower = Results;
@@ -85,7 +88,7 @@ for r = 1:3,
      text(1.2,-15,'(a)','interpreter','latex');
      ylabel('paraunitarity error, $10\log_{10}\{\eta_{\mathrm{PU}} \}$','interpreter','latex');
      legend({'PQRD-BC [17,20]','PQRD-MS [21]','PQRD-DFT [23]','proposed'},'interpreter','latex',...
-             'location','West');
+             'location','West','AutoUpdate','off');
   elseif r==2,   
      text(1.2,-15,'(b)','interpreter','latex');
      ylabel('triangularisation error, $10\log_{10}\{\eta_{\mathrm{TR}} \}$','interpreter','latex');
@@ -111,6 +114,7 @@ errorbar(log2(M)+0.05,(Results(:,r,3)),...
            (Upper(:,r,3))-(Results(:,r,3)),'r.');
 semilogy(log2(M),Results(:,r,4),'k:+','linewidth',LW);
 errorbar(log2(M)+0.05,(Results(:,r,4)),...
+           (Results(:,r,4))-(Lower(:,r,4)),...
            (Upper(:,r,4))-(Results(:,r,4)),'k.');
 semilogy(log2(M),Results(:,r,4),'k:');
   set(gca,'TickLabelInterpreter','latex','XTick',(1:5),'XTickLabel',...

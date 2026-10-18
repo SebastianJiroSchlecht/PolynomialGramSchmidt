@@ -10,8 +10,8 @@ function Results = PQRD_Faizan_CAMSAP2(A);
 %   Faizan's
 %-------------------------------------------------------------------
 tic;
-[Qhat,~,Rhat] = PQRD_analytic_Q_ver(A,1024,3);     % max DFT size 1024, differ. order for smoothing 4
-%[Qhat,~,Rhat] = AnalyticQRnew(A,1024,3);     % max DFT size 1024, differ. order for smoothing 4
+[Qhat,~,Rhat] = PQRD_analytic_Q_ver(A,4096,3);     % paper maximum DFT size 4096
+%[Qhat,~,Rhat] = AnalyticQRnew(A,1024,3);     % paper maximum DFT size 4096
 ExecTime = toc;
 
 %Qhat = ParaHerm(Qhat);
@@ -28,7 +28,7 @@ QQ = PolyMatConv(ParaHerm(Qhat),Qhat);
 QQ(:,:,(size(QQ,3)+1)/2) = QQ(:,:,(size(QQ,3)+1)/2) - eye(M);
 etaPU = PolyMatNorm(QQ);
 % upper trangularisation
-etaTR = PolyMatNorm(Rhat-Rphat)/PolyMatNorm(Rphat);
+etaTR = PolyMatNorm(Rhat-Rphat)/PolyMatNorm(A);
 % reconstruction error
 Ahat = PolyMatConv(Qhat,Rphat);
 [~,etaRC] = PolyMatAlign(A,Ahat);

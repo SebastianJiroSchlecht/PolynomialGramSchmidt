@@ -62,7 +62,7 @@ while and( (error_P>eps_P),(K<=MaxDFT/2) ),
    K = 2*K;
    af = fft(a,K,2);                 % for next iteration, but also for check
    % check of projection criterion
-   qaf = sum(conj(q2f).*af);
+   qaf = sum(conj(q2f).*af,1);
    error_P = norm(af - q2f.*(qaf(ones(M,1),:)),'fro')^2;
    % disp(sprintf('DFT size K = %d :  projecton error %0.5g',[K error_P]));                  
 end;       

@@ -41,5 +41,11 @@ for k = 1:numel(methods)
     assert(numel(r)==6 && all(isfinite(r)) && all(r>=0));
     fprintf('PASS benchmark method %d\n',k);
 end
+output = [tempname '.txt'];
+outputCleanup = onCleanup(@() delete(output));
+PQRDRandomMatrixEnsembleTest(output,[2 4],[1 2],1);
+r = readmatrix(output);
+assert(size(r,1)==4 && size(unique(r(:,1:4),'rows'),1)==4);
+assert(isequal(sort(unique(r(:,3))),[2;4]));
 fprintf('Numerical regressions passed.\n');
 end
