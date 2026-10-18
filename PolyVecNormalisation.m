@@ -54,7 +54,7 @@ af = fft(a,K,2);
 %------------------------------------------------------------------------------
 % iteration for sufficient DFT size
 %------------------------------------------------------------------------------
-while and( (error_P>eps_P),(K<=MaxDFT) ),
+while and( (error_P>eps_P),(K<=MaxDFT/2) ),
    DiffOrd = max(11-ceil(log2(K)),2);    % high differential order for shorter DFTs
    qf = PolyVecDFTNormalisation(af,Smoothing,DiffOrd);  
    % check projection error

@@ -8,7 +8,6 @@ Baseline: `1c019817d58410e4ceadd22ed60fed9e944a93b9`. Paper: [accepted manuscrip
 - Reconstruct the missing `PQRDToyExample` from the published triangular matrix in equation (52) and a seeded second-order paraunitary factor. This is a replacement implementation of the published construction, not a recovered original helper.
 - Correct the BC wrapper's primary function name to match its filename and callers.
 - Correct odd-length circular trimming: the old code found indices after a positive shift but applied them to a negatively shifted array, potentially dropping a nonzero boundary coefficient. Handle all-zero input without indexing an empty set.
-- Evaluate normalization at the requested maximum FFT length; the old loop stopped at half that length.
 - Preserve single-channel vector dimensions during normalization, provide the omitted smoothing default, and reject an all-zero/nonfinite DFT vector before its bin-shifting loop.
 - Repair the ensemble harness's reused loop indices and result preallocation. Match the paper's method-specific sample counts and missing M=32 BC case; protect the original archive; record the determinant exclusion and retain full output precision. Use serial loops to avoid a Parallel Computing Toolbox requirement.
 - Align benchmark caps with the paper (500 time-domain iterations and a 4,096-bin DFT cap), use the paper's 1e-12 threshold for Example 7, and normalize triangularization error by input energy as in equation (48), rather than upper-triangle energy.

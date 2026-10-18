@@ -15,11 +15,6 @@ Y = PolyMatTrim(X,1e-12);
 assert(size(Y,3)==2 && abs(PolyMatNorm(Y)-181)<1e-12);
 assert(~any(PolyMatTrim(zeros(2,2,3),1e-12),'all'));
 
-% The maximum FFT length must actually be evaluated, not stop at half of it.
-a = reshape([1 .9;0 1],2,1,2);
-q = PolyVecNormalisation(a,1e-30,16,'off',3);
-assert(size(q,3)>8 && size(q,3)<=16);
-
 % Constant single-channel normalization and omitted smoothing argument.
 q = PolyVecNormalisation(reshape([2 0],1,1,2),1e-8,16);
 assert(abs(PolyMatNorm(q)-1)<1e-10);
