@@ -10,16 +10,16 @@ PolyMatConvPHFast.m
 PolyMatConvPH2Fast.m
 
 PolyMatTrim.m                  % methods to trim negligible leading and trailing 
-POlyMatCentreTrim.m            %    coefficients
+PolyMatCentreTrim.m            %    coefficients
 
 ProposedQRDRandomMatrixSingleTest2.m      % harnesses for different methods 
-PQRDCBCRandomMatrixSingleTest2.m
+PQRDBCRandomMatrixSingleTest2.m
 PQRD_Faizan_CAMSAP2.m
 PQRD_Fraser_IMA2.m
 
-PQRD_code_faizan.m             % folder with simulation files from [23] 
-PQRD_code_fraser.m             % folder with simulation files from [21]
-PQRD_code_john.m               % folder with simulation files from [17]
+PQRD_code_faizan/             % folder with simulation files from [23]
+PQRD_code_fraser/             % folder with simulation files from [21]
+PQRD_code_john/               % folder with simulation files from [17]
 
 PQRDRandomMatrixEnsembleTest.m % file for ensemble simulation
 PQRDEnsembleResults.txt        % ensemble results are stored here

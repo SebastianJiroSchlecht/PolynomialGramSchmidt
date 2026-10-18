@@ -1,0 +1,6 @@
+*.eps
+Qhat.mat
+audit-*.png
+reproduction-log.txt
+*-recomputed.txt
+.DS_Store

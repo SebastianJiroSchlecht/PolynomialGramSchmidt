@@ -1,0 +1,33 @@
+name: MATLAB reproducibility
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: matlab-actions/setup-matlab@v3
+        with:
+          release: R2024b
+          products: Signal_Processing_Toolbox
+      - uses: matlab-actions/run-command@v3
+        with:
+          command: addpath('tests'); test_reproducibility
+      - uses: matlab-actions/run-command@v3
+        if: always()
+        with:
+          command: addpath('tests'); audit_figures
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reproduction-figures-and-log
+          path: |
+            Figure*.eps
+            audit-*.png
+            reproduction-log.txt

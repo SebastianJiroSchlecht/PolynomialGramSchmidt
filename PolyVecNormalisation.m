@@ -42,11 +42,12 @@ end;
 if L>1,
    disp('input dimension incorrect');
 end;
-a = squeeze(a);
+a = reshape(a,M,N1);
 K = 2^(ceil(log2(N1))-1);
 error_P = 10*eps_P;
 
-if nargin<4, DiffOrd = 3; end;
+if nargin<4, Smoothing = 'off'; end;
+if nargin<5, DiffOrd = 3; end;
 
 K = 2*K;                             % starting DFT size
 af = fft(a,K,2);             

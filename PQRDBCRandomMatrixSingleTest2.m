@@ -1,4 +1,4 @@
-function Results = PQRDBCRandomMatrixSingleTest(A);
+function Results = PQRDBCRandomMatrixSingleTest2(A);
 % Results = PQRDBCRandomMatrixSingleTest(SeedVal,M,L)
 % 
 % Perform one simulation run within an ensemble of tests using randomised

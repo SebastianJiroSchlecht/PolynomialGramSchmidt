@@ -37,6 +37,9 @@ function qf = PolyVecDFTNormalisation(af,Smoothing,DiffOrd);
 % Stephan Weiss, UoS, 12/8/24
 
 if nargin<3, DiffOrd=3; end;
+if ~all(isfinite(af(:))) || ~any(af(:)),
+   error('PolyVecDFTNormalisation:InvalidVector','Input must be finite and nonzero.');
+end;
    
 
 %------------------------------------------------------------------------------
