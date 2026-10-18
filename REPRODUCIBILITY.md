@@ -8,6 +8,7 @@ Baseline: `1c019817d58410e4ceadd22ed60fed9e944a93b9`. Paper: [accepted manuscrip
 - Reconstruct the missing `PQRDToyExample` from the published triangular matrix in equation (52) and a seeded second-order paraunitary factor. This is a replacement implementation of the published construction, not a recovered original helper.
 - Correct the BC wrapper's primary function name to match its filename and callers.
 - Correct odd-length circular trimming: the old code found indices after a positive shift but applied them to a negatively shifted array, potentially dropping a nonzero boundary coefficient. Handle all-zero input without indexing an empty set.
+- Detect negative as well as positive phase jumps: the paper's real-inner-product sign rule covers both, whereas the uploaded angle comparison only detected positive jumps.
 - Preserve single-channel vector dimensions during normalization, provide the omitted smoothing default, and reject an all-zero/nonfinite DFT vector before its bin-shifting loop.
 - Repair the ensemble harness's reused loop indices and result preallocation. Match the paper's method-specific sample counts and missing M=32 BC case; protect the original archive; record the determinant exclusion and retain full output precision. Use serial loops to avoid a Parallel Computing Toolbox requirement.
 - Align benchmark caps with the paper (500 time-domain iterations and a 4,096-bin DFT cap), use the paper's 1e-12 threshold for Example 7, and normalize triangularization error by input energy as in equation (48), rather than upper-triangle energy.
@@ -16,6 +17,8 @@ Baseline: `1c019817d58410e4ceadd22ed60fed9e944a93b9`. Paper: [accepted manuscrip
 ## Remaining evidence gaps
 
 The archived ensemble contains 109,000 finite rows with the nominal sample counts described in Section VI-C. BC/M=16 has a duplicated (method=2, seed=436, M=16, order=2) key at lines 103432–103433, so this cell has 999 distinct seeds. The archive is unchanged; Figure 7 warns about the duplicate and continues to plot the historical rows. Full ensembles and historical timings have not been regenerated.
+
+The `MaxDFT` argument caps the doubled projection-check grid; the returned normalized-vector FFT uses at most half that length. The original Example 7 settings recover the published -49.2 dB paraunitarity and -58.5 dB triangularization values to rounding; this grid convention is retained.
 
 The implementation uses only a projection stopping criterion, whereas the paper's Algorithm 2 describes both unity and projection criteria. Its DFT projection residual is not divided by the FFT length, so its numerical threshold is not directly the integrated time-domain quantity described in the paper. The smoothing-order argument is overwritten by an adaptive schedule `max(11-ceil(log2(K)),2)`. Those behaviors are documented rather than silently replaced with a new scientific algorithm; convergence at the hard-coded maximum DFT size does not by itself establish that the requested precision was reached.
 

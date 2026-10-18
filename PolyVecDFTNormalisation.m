@@ -104,7 +104,7 @@ for k = 2:K,
    HermAngle(k) = angle(Afnorm(:,k-1)'*Afnorm(:,k));
 end;
 %HermAngle   
-SignCorrection = -mod(cumsum(HermAngle>pi/2),2);      % '-1' means a sign change
+SignCorrection = -mod(cumsum(abs(HermAngle)>pi/2),2);      % '-1' means a sign change
 dummy = find(SignCorrection==0);
 SignCorrection(dummy) = ones(1,length(dummy));        % '1' means no sign change
 

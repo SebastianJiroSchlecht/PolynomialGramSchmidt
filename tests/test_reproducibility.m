@@ -15,6 +15,11 @@ Y = PolyMatTrim(X,1e-12);
 assert(size(Y,3)==2 && abs(PolyMatNorm(Y)-181)<1e-12);
 assert(~any(PolyMatTrim(zeros(2,2,3),1e-12),'all'));
 
+% Both positive and negative phase jumps must be corrected (Algorithm 1).
+af = [1 exp(-3i) exp(-3i) 1; zeros(1,4)];
+qf = PolyVecDFTNormalisation(af,'off');
+assert(all(real(sum(conj(qf(:,1:end-1)).*qf(:,2:end),1))>=0));
+
 % Constant single-channel normalization and omitted smoothing argument.
 q = PolyVecNormalisation(reshape([2 0],1,1,2),1e-8,16);
 assert(abs(PolyMatNorm(q)-1)<1e-10);
