@@ -29,3 +29,13 @@ The missing toy-example helper was reconstructed from equation (52). Its Figure 
 ## Validation
 
 The workflow runs MATLAB R2024b numerical checks and all four plotting scripts from a fresh recursive checkout. Checks cover fast convolutions against time-domain reference operations, odd-length circular trimming, zero and scalar vector handling, the reconstructed toy factorization, a small two-dimension ensemble run through every benchmark wrapper using the paper's finite-factor input construction. Final workflow results and visual comparisons are recorded in the pull request. No local MATLAB license is required for that public-repository workflow.
+
+The final [MATLAB workflow 39157523271](https://github.com/SebastianJiroSchlecht/PolynomialGramSchmidt/actions/runs/39157523271) passed at algorithm commit `a45b3ba5381403d90ad9c955b90f7d1d822bcd98`. All numerical regressions, an eight-case ensemble covering all four methods at M=2 and M=4, and all four figure scripts completed from a clean recursive checkout. Eight EPS files represent the seven numbered figures (Figure 2 is split across two files). Source-help and audit-document updates after that commit do not change executable behavior.
+
+| Example 7 metric / dB | Paper | Initial checked run with uploaded threshold 1e-7 | Paper threshold 1e-12 plus phase correction |
+| --- | ---: | ---: | ---: |
+| Paraunitarity | -49.2 | -49.239567 | -83.523545 |
+| Triangularization | -58.5 | -58.455368 | -93.836789 |
+| Reconstruction | -41.3 | Not evaluated by the uploaded script | -74.777154 |
+
+These runs establish execution and the parameter discrepancy, not a full reproduction certification. The changed threshold and phase handling are both present in the final run; the improvement is not attributed to either change alone. Visual spot-checks covered the reconstructed Figure 3, the Example 7 plots, and the ensemble plot. Full ensemble regeneration, historical timing replication, complete coverage of arbitrary unstructured benchmark inputs, and third-party redistribution authorization remain unverified.

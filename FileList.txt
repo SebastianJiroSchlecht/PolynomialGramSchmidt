@@ -1,9 +1,9 @@
 Files accompanying the paper Faizan A. Khattak, Ian K. Proudler, Stephan Weiss, and Sebastian J. Schlecht, "Analytic Gram-Schmidt Orthogonalisation and QR Decomposition for Polynomial Matrices," IEEE Transactions on Signal Processing, vol. 74, pp. 3597-3611, July 2026.
 
 (1) simulation and test files in addition to the PEVD toolbox
-PolyMatGramSchmidt.m           % algorithm 2
-PolyVecNormalisation.m         % algorithm 1
-PolyVecDFTNormalisation.m      %     called by PolyVecNormalisation()
+PolyMatGramSchmidt.m           % Algorithm 3
+PolyVecNormalisation.m         % Algorithm 2
+PolyVecDFTNormalisation.m      % Algorithm 1, called by PolyVecNormalisation()
 
 PolyMatConvFast.m              % fast polynomial matrix multiplications
 PolyMatConvPHFast.m
@@ -30,3 +30,8 @@ TSP26_PolyGramSchmidt_Figs34.m
 TSP26_PolyGramSchmidt_Figs56.m
 TSP26_PolyGramSchmidt_Fig7.m
 
+
+SetPaths.m                    % paths for the pinned PEVD Toolbox and benchmarks
+PQRDToyExample.m               % reconstruction of Example 6 / equation (52)
+THIRD_PARTY.md                % external-code provenance and permission evidence
+REPRODUCIBILITY.md            % audit findings and validation boundaries

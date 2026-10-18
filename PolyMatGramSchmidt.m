@@ -13,7 +13,7 @@ function [Qhat] = PolyMatGramSchmidt(A,threshold,Smoothing,DiffOrd);
 %
 % Output parameters:
 %     Q          MxMxN2 paraunitary matrix
-%     R          MxMxN3 upper right triangular polynomial matrix
+% R can be evaluated separately as PolyMatConvPHFast(Qhat,A).
 
 % S. Weiss, 17/7/25
 

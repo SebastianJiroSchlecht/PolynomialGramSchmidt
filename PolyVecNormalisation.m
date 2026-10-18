@@ -1,23 +1,23 @@
 function [q,error_P] = PolyVecNormalisation(a,eps_P,MaxDFT,Smoothing,DiffOrd);
 % q = PolyVecNormalisation(a,eps_P,MaxDFT)
 % 
-% q = PolyVecNormalisation(a,MaxDFT) performs the normalisation of a polynomial 
+% q = PolyVecNormalisation(a,eps_P,MaxDFT) performs the normalisation of a polynomial
 % vector a. The result is guaranteed to be analytic [1], and the order of the
 % approximation is refined until either a maximum DFT size MaxDFT is reached 
 % or the projection error [1] falls below the threshold eps_P [1]. The return
 % parameter q is the normalised vector.
 % 
-% [q,error_P] = PolyVecNormalisation(a,MaxDFT) additionally returns the reached
+% [q,error_P] = PolyVecNormalisation(a,eps_P,MaxDFT) additionally returns the reached
 % projection error in the variable error_P.
 % 
-% The implementation reflects Algorithm 2 in [1].
+% Projection-based variant of Algorithm 2 in [1]; the unity criterion is not checked.
 %
 % Input parameters
 %   a          Mx1xN1 polynomial vector
 %   eps_P      threshold for projection error
-%   MaxDFT     maximum DFT size
-%   Smoothing  phase smoothing: 'on' or 'off'
-%   DiffOrd    differential order for smoothing (opt., default 3)
+%   MaxDFT     maximum doubled projection-check DFT size
+%   Smoothing  phase smoothing: 'on' or 'off' (default 'off')
+%   DiffOrd    accepted for compatibility; replaced by the adaptive order below
 %
 % Output parameter
 %   q        normalised vector of dimension Mx1xN2
