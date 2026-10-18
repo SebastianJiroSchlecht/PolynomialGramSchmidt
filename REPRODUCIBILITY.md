@@ -12,6 +12,7 @@ Baseline: `1c019817d58410e4ceadd22ed60fed9e944a93b9`. Paper: [accepted manuscrip
 - Preserve single-channel vector dimensions during normalization, provide the omitted smoothing default, and reject an all-zero/nonfinite DFT vector before its bin-shifting loop.
 - Repair the ensemble harness's reused loop indices and result preallocation. Match the paper's method-specific sample counts and missing M=32 BC case; protect the original archive; record the determinant exclusion and retain full output precision. Use serial loops to avoid a Parallel Computing Toolbox requirement.
 - Align benchmark caps with the paper (500 time-domain iterations and a 4,096-bin DFT cap), use the paper's 1e-12 threshold for Example 7, and normalize triangularization error by input energy as in equation (48), rather than upper-triangle energy.
+- Calculate Figure 7 ranks from the available trials (with warnings for short cells), so determinant exclusions in a recomputation do not cause out-of-bounds indexing. The ranks for the shipped 1,000/10,000-row cells remain unchanged.
 - Correct the asymmetric runtime error bar in Figure 7 and prevent its legend from acquiring later curves.
 
 ## Remaining evidence gaps
