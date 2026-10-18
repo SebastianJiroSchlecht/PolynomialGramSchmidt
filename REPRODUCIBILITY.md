@@ -13,13 +13,14 @@ Baseline: `1c019817d58410e4ceadd22ed60fed9e944a93b9`. Paper: [accepted manuscrip
 - Repair the ensemble harness's reused loop indices and result preallocation. Match the paper's method-specific sample counts and missing M=32 BC case; protect the original archive; record the determinant exclusion and retain full output precision. Use serial loops to avoid a Parallel Computing Toolbox requirement.
 - Align benchmark caps with the paper (500 time-domain iterations and a 4,096-bin DFT cap), use the paper's 1e-12 threshold for Example 7, and normalize triangularization error by input energy as in equation (48), rather than upper-triangle energy.
 - Calculate Figure 7 ranks from the available trials (with warnings for short cells), so determinant exclusions in a recomputation do not cause out-of-bounds indexing. The ranks for the shipped 1,000/10,000-row cells remain unchanged.
+- Evaluate and print Example 7's reconstruction error from equation (49), which the uploaded figure script omitted.
 - Correct the asymmetric runtime error bar in Figure 7 and prevent its legend from acquiring later curves.
 
 ## Remaining evidence gaps
 
 The archived ensemble contains 109,000 finite rows with the nominal sample counts described in Section VI-C. BC/M=16 has a duplicated (method=2, seed=436, M=16, order=2) key at lines 103432–103433, so this cell has 999 distinct seeds. The archive is unchanged; Figure 7 warns about the duplicate and continues to plot the historical rows. Full ensembles and historical timings have not been regenerated.
 
-The `MaxDFT` argument caps the doubled projection-check grid; the returned normalized-vector FFT uses at most half that length. The original Example 7 settings recover the published -49.2 dB paraunitarity and -58.5 dB triangularization values to rounding; this grid convention is retained.
+The `MaxDFT` argument caps the doubled projection-check grid; the returned normalized-vector FFT uses at most half that length. The uploaded Example 7 script uses threshold 1e-7 and recovers the published -49.2 dB paraunitarity and -58.5 dB triangularization values to rounding. The paper states threshold 1e-12. With that stated threshold and the phase correction, the measured errors are -83.523545 dB and -93.836789 dB. The parameter discrepancy requires author confirmation; the repaired code does not reproduce the published pair exactly. The FFT-grid convention is retained.
 
 The implementation uses only a projection stopping criterion, whereas the paper's Algorithm 2 describes both unity and projection criteria. Its DFT projection residual is not divided by the FFT length, so its numerical threshold is not directly the integrated time-domain quantity described in the paper. The smoothing-order argument is overwritten by an adaptive schedule `max(11-ceil(log2(K)),2)`. Those behaviors are documented rather than silently replaced with a new scientific algorithm; convergence at the hard-coded maximum DFT size does not by itself establish that the requested precision was reached.
 

@@ -65,6 +65,15 @@ for m = 1:M,
 end;
 TriEnergy = 10*log10(lower/PolyMatNorm(A));
 disp(sprintf('error in triangularisation:   %f dB',TriEnergy));
+% Reconstruction metric from equation (49), using the upper triangular factor.
+Rphat = Rhat;
+for coefficientIndex = 1:size(Rphat,3)
+   Rphat(:,:,coefficientIndex) = triu(Rphat(:,:,coefficientIndex));
+end
+[~,etaRC] = PolyMatAlign(A,PolyMatConvFast(Qhat,Rphat));
+assert(isfinite(etaRC) && etaRC>=0,'Reconstruction metric must be finite.');
+fprintf('reconstruction error:         %f dB\n',10*log10(etaRC));
+
 
 % determine the support of Rhat down to -50~dB coefficient size
 RR = zeros(M,M,50);
